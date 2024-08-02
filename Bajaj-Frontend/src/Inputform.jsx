@@ -83,7 +83,7 @@ function InputForm({ onSubmit, error, selectedOptions, setSelectedOptions }) {
       {/* Loading message */}
       {isLoading && (
         <Text color="orange.500" mt={3}>
-          You are using a free version of the API. Please wait up to 1 minute for it to boot up.
+           Sir, I am using the free version of the Render Service to host the API. Please wait up to 1 minute for it to boot up.
         </Text>
       )}
 
