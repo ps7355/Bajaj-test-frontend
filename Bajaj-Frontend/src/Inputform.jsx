@@ -1,44 +1,48 @@
 import React, { useState } from 'react';
 import {
   Box,
-  Textarea,
+  Input,
   Button,
   FormControl,
   FormLabel,
   FormErrorMessage,
   Stack,
   Checkbox,
-  useToast
+  Text,
+  HStack
 } from '@chakra-ui/react';
 
 function InputForm({ onSubmit, error, selectedOptions, setSelectedOptions }) {
   const [input, setInput] = useState('');
   const [isError, setIsError] = useState(false);
-  const [filtersVisible, setFiltersVisible] = useState(false); // New state for filter visibility
-  const toast = useToast();
+  const [filtersVisible, setFiltersVisible] = useState(false); // State for filter visibility
+  const [isLoading, setIsLoading] = useState(false); // State for loading
+  const [responseReceived, setResponseReceived] = useState(false); // State to check if response is received
 
   const handleInputChange = (e) => {
     setInput(e.target.value);
     setIsError(false);
   };
 
-  const handleSubmit = (e) => {
+  const handleExampleClick = () => {
+    setInput(JSON.stringify({ data: ["M", "1", "334", "4", "B"] }, null, 2));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+    setResponseReceived(false); // Reset response status
+
     try {
       JSON.parse(input); // Validate JSON
-      onSubmit(input);
+      await onSubmit(input);
       setIsError(false);
       setFiltersVisible(true); // Show filters after successful submission
+      setResponseReceived(true);
     } catch {
       setIsError(true);
-      toast({
-        title: "Invalid JSON",
-        description: "The JSON format is incorrect. Please check your input.",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-        position: "top",
-      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -50,28 +54,44 @@ function InputForm({ onSubmit, error, selectedOptions, setSelectedOptions }) {
   };
 
   return (
-    <Box>
-      <FormControl isInvalid={isError}>
+    <Box textAlign="center" p={4} maxWidth="800px" margin="0 auto">
+      <FormControl isInvalid={isError} mb={4}>
         <FormLabel>Enter JSON:</FormLabel>
-        <Textarea
-          placeholder='Enter JSON here'
-          value={input}
-          onChange={handleInputChange}
-          rows={6}
-          mb={3}
-        />
+        <HStack spacing={2} align="center">
+          <Input
+            placeholder='Enter JSON here'
+            value={input}
+            onChange={handleInputChange}
+            width="80%" // Increased width
+            resize="none" // Prevent resizing
+          />
+          <Button
+            colorScheme="blue"
+            onClick={handleExampleClick}
+            width="20%" // Expanded width
+          >
+            Use Example JSON
+          </Button>
+        </HStack>
         {isError && <FormErrorMessage>Invalid JSON format</FormErrorMessage>}
         
-        <Button colorScheme="teal" onClick={handleSubmit}>
+        <Button colorScheme="teal" onClick={handleSubmit} mt={3} isLoading={isLoading}>
           Submit
         </Button>
       </FormControl>
 
+      {/* Loading message */}
+      {isLoading && (
+        <Text color="orange.500" mt={3}>
+          You are using a free version of the API. Please wait up to 1 minute for it to boot up.
+        </Text>
+      )}
+
       {/* Filter options appear only after valid JSON submission */}
-      {filtersVisible && (
+      {filtersVisible && !isLoading && responseReceived && (
         <Box mt={4}>
-          <Stack spacing={3}>
-            <FormLabel>Select Filters:</FormLabel>
+          <FormLabel>Select Filters:</FormLabel>
+          <Stack spacing={3} direction="row" justify="center">
             <Checkbox
               value="Alphabets"
               onChange={handleOptionChange}
