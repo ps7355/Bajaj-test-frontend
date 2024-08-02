@@ -12,7 +12,7 @@ function App() {
 
   const handleSubmit = async (jsonInput) => {
     try {
-      const res = await fetch('http://localhost:3000/bfhl', {
+      const res = await fetch('https://bajaj-test-backend-api.onrender.com/bfhl', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
