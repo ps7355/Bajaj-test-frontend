@@ -1,3 +1,4 @@
+// InputForm.js
 import React, { useState } from 'react';
 import {
   Box,
@@ -15,9 +16,9 @@ import {
 function InputForm({ onSubmit, error, selectedOptions, setSelectedOptions }) {
   const [input, setInput] = useState('');
   const [isError, setIsError] = useState(false);
-  const [filtersVisible, setFiltersVisible] = useState(false); // State for filter visibility
-  const [isLoading, setIsLoading] = useState(false); // State for loading
-  const [responseReceived, setResponseReceived] = useState(false); // State to check if response is received
+  const [filtersVisible, setFiltersVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [responseReceived, setResponseReceived] = useState(false);
 
   const handleInputChange = (e) => {
     setInput(e.target.value);
@@ -25,19 +26,19 @@ function InputForm({ onSubmit, error, selectedOptions, setSelectedOptions }) {
   };
 
   const handleExampleClick = () => {
-    setInput(JSON.stringify({ data: ["M", "1", "334", "4", "B"] }, null, 2));
+    setInput(JSON.stringify({data:["M","1","334","4","B"]}, null, 2));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    setResponseReceived(false); // Reset response status
+    setResponseReceived(false);
 
     try {
       JSON.parse(input); // Validate JSON
       await onSubmit(input);
       setIsError(false);
-      setFiltersVisible(true); // Show filters after successful submission
+      setFiltersVisible(true);
       setResponseReceived(true);
     } catch {
       setIsError(true);
@@ -56,19 +57,19 @@ function InputForm({ onSubmit, error, selectedOptions, setSelectedOptions }) {
   return (
     <Box textAlign="center" p={4} maxWidth="800px" margin="0 auto">
       <FormControl isInvalid={isError} mb={4}>
-        <FormLabel>Enter JSON:</FormLabel>
+        <FormLabel>Enter JSON Data:</FormLabel>
         <HStack spacing={2} align="center">
           <Input
             placeholder='Enter JSON here'
             value={input}
             onChange={handleInputChange}
-            width="80%" // Increased width
-            resize="none" // Prevent resizing
+            width="90%"
+            resize="none"
           />
           <Button
             colorScheme="blue"
             onClick={handleExampleClick}
-            width="20%" // Expanded width
+            width={{ base: "100%", md: "50%" }}
           >
             Use Example JSON
           </Button>
@@ -80,14 +81,12 @@ function InputForm({ onSubmit, error, selectedOptions, setSelectedOptions }) {
         </Button>
       </FormControl>
 
-      {/* Loading message */}
       {isLoading && (
         <Text color="orange.500" mt={3}>
-           Sir, I am using the free version of the Render Service to host the API. Please wait up to 1 minute for it to boot up.
+          Sir, I am using the free version of the Render Service to host the API. Please wait up to 1 minute for it to boot up.
         </Text>
       )}
 
-      {/* Filter options appear only after valid JSON submission */}
       {filtersVisible && !isLoading && responseReceived && (
         <Box mt={4}>
           <FormLabel>Select Filters:</FormLabel>

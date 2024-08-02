@@ -1,10 +1,11 @@
+// ResponseDisplay.js
 import React from 'react';
 import { Box, Heading, Text, Stack } from '@chakra-ui/react';
 
-function ResponseDisplay({ response, selectedOptions, setSelectedOptions }) {
+function ResponseDisplay({ response, selectedOptions }) {
   return (
     <Box mt={4}>
-      <Heading size="md" mb={2}>Response</Heading>
+      <Heading size="md" mb={2} textAlign="center">Response</Heading>
       <Stack spacing={3}>
         {selectedOptions.length === 0 && (
           <Box>
